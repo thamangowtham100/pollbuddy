@@ -125,15 +125,12 @@ $(CAROOT)/rootCA-key.pem $(CAROOT)/rootCA.pem &: | $(MKCERT)
 build/certs/cert.pem build/certs/privkey.pem build/certs/rootCA.pem build/certs/rootCA-key.pem &: $(CAROOT)/rootCA-key.pem $(CAROOT)/rootCA.pem | $(MKCERT) build
 	mkdir -p build/certs
 	$(MKCERT) -cert-file build/certs/cert.pem -key-file build/certs/privkey.pem \
-		"*.islandora.dev" \
-		"islandora.dev" \
-		"*.islandora.io" \
-		"islandora.io" \
-		"*.islandora.info" \
-		"islandora.info" \
-		"localhost" \
-		"127.0.0.1" \
-		"::1"
+		"solr.digitalperiyar.com" \
+		"fcrepo.digitalperiyar.com" \
+		"ide.digitalperiyar.com" \
+		"activemq.digitalperiyar.com" \
+		"blazegraph.digitalperiyar.com" \
+		"www.digitalperiyar.com" 
 	cp "$(CAROOT)/rootCA-key.pem" build/certs/rootCA-key.pem
 	cp "$(CAROOT)/rootCA.pem" build/certs/rootCA.pem
 
@@ -188,7 +185,6 @@ build/bake.json: | docker-buildx jq build
 .SILENT: build/manifests.json
 build/manifests.json: build/bake.json
 	jq '[.target[].tags[]] | reduce .[] as $$i ({}; .[$$i | sub("-(arm64|amd64)$$"; "")] = ([$$i] + .[$$i | sub("-(arm64|amd64)$$"; "")] | sort))' build/bake.json > build/manifests.json
-
 .PHONY: bake
 ## Builds and loads the target(s) into the local docker context.
 bake: build/bake.json
